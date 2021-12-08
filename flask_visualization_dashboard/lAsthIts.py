@@ -1,17 +1,22 @@
+from dash.html.Hr import Hr
 import pandas as pd
 import plotly.express as px  # (version 4.7.0 or higher)
 import plotly.graph_objects as go
+from dash.dependencies import Input, Output, State
 # pip install dash (version 2.0.0 or higher)
 from dash import Dash, dcc, html, Input, Output, html
 import numpy as np
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
+
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Import your data
 df_hero_statistics = pd.read_csv('../data/overall_hero_cluster.csv')
 # Making the Master DataFrames to be parsed and Utilized
-
+columns = list(df_hero_statistics.columns)
 # df_daily = pd.read_csv()
 # master_df = pd.read_csv()
 
@@ -28,36 +33,43 @@ navbar = dbc.NavbarSimple(
 
 # ------------------------------------------------------------------------------
 # App layout
+# app.layout = html.Div(["Single dynamic Dropdown",dcc.Dropdown(id="my-dynamic-dropdown",options=[{"label": x, "value": x} for x in df_hero_statistics.hero.unique()])]),
+#                 html.Div([
+#                     "Multi dynamic Dropdown",
+#                     dcc.Dropdown(id="my-multi-dynamic-dropdown",
+#                     options=[{"label": y, "value": y} for y in df_hero_statistics.columns])],),
+
+#                 html.Div([dcc.Graph{id="the_graph",),]),]))
+
+# NEW START
+# create the layout with the DASH name or app in our case
 app.layout = html.Div([
-    navbar,
+    # TITLE
+    # after every html.component(parameters will be in putted here, seperated by the style CSS element style={})
+    # .h1 TITLE
+    # python wrapper for REACT
+    html.H1("lAsthIts: DOTA2 mmr analytical Tool",
+            style={'textAlign': 'center'}),
+    # Horizonantal Line
+    html.Hr(),
+    # .p Paragraph
+    html.P("Choose The Hero You'd Like to Inspect"),
+    # html.DIV controls the layouts of the page
+    # dcc. is a core component different than HTML; DASH CORE COMPONENTS
+    # NOW LETS NEST THE html.DIV; this here will place the dcc.dropdown across a specific amount of columns; default is 12
+    html.Div(html.Div([
+        # dcc.Dropdown to use to populate our options
+        # id= 'how to reference this component input on the @app callback
+        # placing all the hero names in the dropdown
+        # clearable will always have a value
+        # initial value = value
+        # options for loop comprehension to getthe values the column name we are trying to refernce
+        dcc.Dropdown(id='hero_type', clearable=False, value="HEROES", options=[
+                     {'label': i, 'value': i} for i in df_hero_statistics['hero'].unique()]),
+    ], className="four columns"), className="row"),
 
-    html.H1("Specific Hero Statistics",
-            style={'text-align': 'center'}),
-
-    html.Br(),
-
-    # --------------------------------------------------------------------------------
-    # First Map Chart
-    # First we include a dropdown slector
-    dcc.Dropdown(id="selected_hero",
-                 options=[{"label": x, "value": x}
-                           for x in df_hero_statistics.hero.unique()],
-                 value="options",
-                 style={'width': "40%"}
-                 ),
-
-    #  Now we include the map graph.
-    html.Div(children=['''Bar Graph Displaying Important Hero Metrics.''',
-
-    dcc.Graph(
-        id="all-hero-series-chart",
-        style={'display': 'inline-block'}),
-
-    dcc.Graph(
-        id="all-columns-series-chart",
-        style={'display': 'inline-block'})
-    ]),
-    html.Div(id='output_container', children=[])
+    # NOTE that here is where the id gets connected in the backend, and the property being the children
+    html.Div(id="output_div", children=[]),
 ])
 # --------------------------------------------------------------------------------
 # Second and Thrid Charts
@@ -99,45 +111,100 @@ app.layout = html.Div([
 #     html.Div(id='scatter_plot_value')
 # ])
 # @end of app.layout
-# ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # First map chart and connecting the Plotly graphs with Dash Components
-@ app.callback(
-    [Output(component_id="all-hero-series-chart", component_property="figure"),
-     Output(component_id="all-columns-series-chart",
-            component_property="figure"),
-     Output(component_id='output_container', component_property='children')],
-    [Input(component_id="selected_hero", component_property="options")])
-
-def hero_statistics(selected_hero):
-    print(selected_hero)
+# The .callback is what actually updates the graphs and outputs it with the OUTPUT
+# The input is the value that is passed from the list of values that are connected to our dcc.Dropdown component
+@app.callback(
+    # Output(component_id="variable id linked above", component_property="refer to the component in the layout")
+    Output(component_id="output_div", component_property="children"),
+    # NOTE tha value
+    Input(component_id="hero_type", component_property="value"),
+)
+# def update_multi_options(search_value, search_values, values):
+#     if not search_value:
+#         raise PreventUpdate
+#     # Make sure that the set values are in the option list, else they will disappear
+#     # from the shown select list, but still part of the `value`.
+#     return [df_hero_statistics for df_hero_statistics in search_values if search_value in df_hero_statistics["label"] or df_hero_statistics["values"] in (values or [])]
+def hero_statistics(hero_choosen):
+    if hero_choosen == None:
+        raise PreventUpdate
 
     # copy from main DF **DO NOT MESS WITH ORIGINAL DATAFRAMES**
     tmp_df = df_hero_statistics.copy()
-    display_text = "The hero chosen by user was: %s" % selected_hero
+
     # Just removing the rows where the values are the total USA.
     # logic to be placed here
     # tmp_df = tmp_df[tmp_df.state != 'USA']
-    print(display_text)
     # Selecting just the rows that the data is the input from the user.
 
     # hero from cluster data frame where the 'hero' column in dataframe is equiavalent to the value 'selcted_hero' when selected
-    tmp_df = tmp_df[tmp_df['hero'] == selected_hero]
-    # Plotly Graph Objects (GO)
-    # fig = go.Figure(
-    #     data=[go.Choropleth(
-    #         locationmode='USA-states',
-    #         locations=tmp_df[''],
-    #         z=tmp_df["gold_per_min"].astype(float)
-    #     )]
-    # )
+    tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
+    fig_histogram = px.bar(tmp_df_histogram, x="hero", y='xp_per_min')
+    fig_histogram.update_xaxes(categoryorder="total descending")
+
+    tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
+    fig_histogram2 = px.bar(tmp_df_histogram2, x="hero", y='gold_per_min')
+    fig_histogram2.update_xaxes(categoryorder="total descending")
+
+    tmp_df_histogram3 = tmp_df[tmp_df["hero"] == hero_choosen]
+    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero", y='last_hits')
+    fig_histogram3.update_xaxes(categoryorder="total descending")
+
+    # STRIP CHART
+    # NOTE Y- According to the role
+    # NOTE SINGLE METRIC TO SEE AGAINST
+    fig_strip1 = px.strip(tmp_df_histogram, x='xp_per_min', y='hero_role')
+    fig_strip2 = px.strip(tmp_df_histogram, x='kills', y='hero_role')
+
+    # SUNBURST
+    # NOTE ensure safety, null values screw up with SUNBURST
+    # NOTE we are gonna use the hero cluster as the main metric
+    df_sburst = df_hero_statistics.dropna(subset=['hero'])
+    # filtered to ensure only these specific metrics
+    # df_sburst = df_sburst[df_sburst['metric_types']==df_sburst["xp_per_min", "gold_per_min", "last_hits"]]
+    # root our clusters
+    # branches are the heroes
+    # metric types are all the specific metrics we are trying to display
+    fig_sburst = px.sunburst(
+        df_sburst, path=["hero_role", "hero", "gold_per_min"])
+
+    # EMPIRICAL CUM DISTRIBUTION
+    df_ecdf = df_hero_statistics[df_hero_statistics["hero_role"]
+                                 .isin(["Hard-Carry", "Soft-carry", "Support"])]
+    fig_ecdf = px.ecdf(df_ecdf, x='kills', color="hero_role")
+
+    # LINECHART
 
     # Bar Graph for the Ouput of Hero Individual Statistics
-    fig = px.bar(tmp_df, y='gold_per_min', x='hero',
-                 title="%s Individual Statistics" % selected_hero)
-    return fig
+    # fig = px.pie(tmp_df,names='col',title="%s Individual Statistics on %s" % search_value)
+
+    # return all the figures
+    return [
+        html.Div([
+            html.H2("GRAPHS", style={"textAlign": "center"}),
+            html.Hr(),
+            html.Div([
+                html.Div([dcc.Graph(figure=fig_histogram)],
+                         className="four columns"),
+                html.Div([dcc.Graph(figure=fig_histogram2)],
+                         className="four columns"),
+                html.Div([dcc.Graph(figure=fig_histogram3)],
+                         className="four columns"),
+            ], className="row"),
+            html.Hr(),
+            html.Div([
+                html.Div([dcc.Graph(figure=fig_ecdf)],
+                         className="six columns"),
+                html.Div([dcc.Graph(figure=fig_strip1)],
+                         className="six columns"),
+            ], className="row"),
+            html.Div([
+                html.Div([dcc.Graph(figure=fig_sburst)], className="twelve columns"), ], className="row"),
+        ])
+    ]
 # ----------------------------------------------------------------
 # # Time series charts
 # @app.callback(
