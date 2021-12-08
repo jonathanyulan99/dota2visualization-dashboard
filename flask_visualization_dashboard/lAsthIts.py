@@ -40,9 +40,9 @@ app.layout = html.Div([
     # First Map Chart
     # First we include a dropdown slector
     dcc.Dropdown(id="selected_hero",
-                 options={"label": x1=([x for x in df_hero_statistics.hero.unique()])},
+                 options=[{"label": x, "value": x}
+                           for x in df_hero_statistics.hero.unique()],
                  value="options",
-                 multi=True,
                  style={'width': "40%"}
                  ),
 
@@ -113,7 +113,6 @@ app.layout = html.Div([
 
 def hero_statistics(selected_hero):
     print(selected_hero)
-    print(type(selected_hero))
 
     # copy from main DF **DO NOT MESS WITH ORIGINAL DATAFRAMES**
     tmp_df = df_hero_statistics.copy()
@@ -126,7 +125,6 @@ def hero_statistics(selected_hero):
 
     # hero from cluster data frame where the 'hero' column in dataframe is equiavalent to the value 'selcted_hero' when selected
     tmp_df = tmp_df[tmp_df['hero'] == selected_hero]
-    tmp_df = tmp_df.groupby(by=value)
     # Plotly Graph Objects (GO)
     # fig = go.Figure(
     #     data=[go.Choropleth(
@@ -137,7 +135,7 @@ def hero_statistics(selected_hero):
     # )
 
     # Bar Graph for the Ouput of Hero Individual Statistics
-    fig = px.bar(tmp_df, y='hero', x='gold_per_min',
+    fig = px.bar(tmp_df, y='gold_per_min', x='hero',
                  title="%s Individual Statistics" % selected_hero)
     return fig
 # ----------------------------------------------------------------
