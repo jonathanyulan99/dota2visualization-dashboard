@@ -15,6 +15,7 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Import your data
 df_hero_statistics = pd.read_csv('../data/overall_hero_cluster.csv')
+df_hero_statistics_updated = pd.read_csv('total_heroes_metrics.csv')
 # Making the Master DataFrames to be parsed and Utilized
 columns = list(df_hero_statistics.columns)
 # df_daily = pd.read_csv()
@@ -142,17 +143,52 @@ def hero_statistics(hero_choosen):
 
     # hero from cluster data frame where the 'hero' column in dataframe is equiavalent to the value 'selcted_hero' when selected
     tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram = px.bar(tmp_df_histogram, x="hero", y='xp_per_min')
+    fig_histogram = px.bar(tmp_df_histogram, x="hero", y='gold_per_min')
     fig_histogram.update_xaxes(categoryorder="total descending")
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram2 = px.bar(tmp_df_histogram2, x="hero", y='gold_per_min')
+    tmp_df_histogram2['average_gold_per_min'] = tmp_df["gold_per_min"].mean()
+    fig_histogram2 = px.bar(tmp_df_histogram2, x="hero",y="average_gold_per_min")
     fig_histogram2.update_xaxes(categoryorder="total descending")
 
-    tmp_df_histogram3 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero", y='last_hits')
+    tmp_df_histogram3 = tmp_df.groupby('hero_role')['gold_per_min'].mean()
+    tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
+    tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
+    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero_role",y='gold_per_min')
     fig_histogram3.update_xaxes(categoryorder="total descending")
 
+    # xp_per_min
+    tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
+    fig_histogram4 = px.bar(tmp_df_histogram, x="hero", y='xp_per_min')
+    fig_histogram.update_xaxes(categoryorder="total descending")
+
+    tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
+    tmp_df_histogram2['average_xp_per_min'] = tmp_df["xp_per_min"].mean()
+    fig_histogram5 = px.bar(tmp_df_histogram2, x="hero",y="average_xp_per_min")
+    fig_histogram5.update_xaxes(categoryorder="total descending")
+
+    tmp_df_histogram3 = tmp_df.groupby('hero_role')['xp_per_min'].mean()
+    tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
+    tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
+    fig_histogram6 = px.bar(tmp_df_histogram3, x="hero_role", y='xp_per_min')
+    fig_histogram6.update_xaxes(categoryorder="total descending")
+
+    # last_hits
+    tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
+    fig_histogram7 = px.bar(tmp_df_histogram, x="hero", y='last_hits')
+    fig_histogram7.update_xaxes(categoryorder="total descending")
+
+    tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
+    tmp_df_histogram2['average_last_hits'] = tmp_df["last_hits"].mean()
+    fig_histogram8 = px.bar(tmp_df_histogram2, x="hero", y="average_last_hits")
+    fig_histogram8.update_xaxes(categoryorder="total descending")
+
+    tmp_df_histogram3 = tmp_df.groupby('hero_role')['last_hits'].mean()
+    tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
+    tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
+    fig_histogram9 = px.bar(tmp_df_histogram3, x="hero_role", y='last_hits')
+    fig_histogram9.update_xaxes(categoryorder="total descending")
+    
     # STRIP CHART
     # NOTE Y- According to the role
     # NOTE SINGLE METRIC TO SEE AGAINST
@@ -169,12 +205,12 @@ def hero_statistics(hero_choosen):
     # branches are the heroes
     # metric types are all the specific metrics we are trying to display
     fig_sburst = px.sunburst(
-        df_sburst, path=["hero_role", "hero", "gold_per_min"])
+        df_sburst, path=["hero_role", "hero", "last_hits"])
 
     # EMPIRICAL CUM DISTRIBUTION
     df_ecdf = df_hero_statistics[df_hero_statistics["hero_role"]
-                                 .isin(["Hard-Carry", "Soft-carry", "Support"])]
-    fig_ecdf = px.ecdf(df_ecdf, x='kills', color="hero_role")
+                                 .isin(["Hard-Carry", "Soft-carry", "Support", "Offlaner/All-rounder"])]
+    fig_ecdf = px.ecdf(df_ecdf, x='xp_per_min', color="hero_role")
 
     # LINECHART
 
@@ -192,6 +228,24 @@ def hero_statistics(hero_choosen):
                 html.Div([dcc.Graph(figure=fig_histogram2)],
                          className="four columns"),
                 html.Div([dcc.Graph(figure=fig_histogram3)],
+                         className="four columns"),
+            ], className="row"),
+            html.Hr(),
+            html.Div([
+                html.Div([dcc.Graph(figure=fig_histogram4)],
+                         className="four columns"),
+                html.Div([dcc.Graph(figure=fig_histogram5)],
+                         className="four columns"),
+                html.Div([dcc.Graph(figure=fig_histogram6)],
+                         className="four columns"),
+            ], className="row"),
+            html.Hr(),
+            html.Div([
+                html.Div([dcc.Graph(figure=fig_histogram7)],
+                         className="four columns"),
+                html.Div([dcc.Graph(figure=fig_histogram8)],
+                         className="four columns"),
+                html.Div([dcc.Graph(figure=fig_histogram9)],
                          className="four columns"),
             ], className="row"),
             html.Hr(),
