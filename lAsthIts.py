@@ -10,11 +10,12 @@ import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = [
+    'https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.MORPH]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Import your data
-df_hero_statistics = pd.read_csv('data/overall_hero_cluster.csv')
+df_hero_statistics = pd.read_csv('overall_hero_cluster.csv')
 df_hero_statistics_updated = pd.read_csv('total_heroes_metrics.csv')
 # Making the Master DataFrames to be parsed and Utilized
 columns = list(df_hero_statistics.columns)
@@ -23,9 +24,12 @@ columns = list(df_hero_statistics.columns)
 
 navbar = dbc.NavbarSimple(
     children=[
+        dbc.NavItem(html.Img(
+            src='https://logos-world.net/wp-content/uploads/2020/12/Dota-2-Logo.png', height="40px")),
         dbc.NavItem(dbc.NavLink("Hero Analyzer", href="")),
         dbc.NavItem(dbc.NavLink("Meta Analyzer", href="")),
     ],
+
     brand="Dota 2 Dashboard",
     brand_href="#",
     color="primary",
@@ -45,12 +49,13 @@ navbar = dbc.NavbarSimple(
 # NEW START
 # create the layout with the DASH name or app in our case
 app.layout = html.Div([
+    navbar,
     # TITLE
     # after every html.component(parameters will be in putted here, seperated by the style CSS element style={})
     # .h1 TITLE
-    # python wrapper for REACT
     html.H1("lAsthIts: DOTA2 mmr analytical Tool",
             style={'textAlign': 'center'}),
+    # python wrapper for REACT
     # Horizonantal Line
     html.Hr(),
     # .p Paragraph
@@ -117,7 +122,7 @@ app.layout = html.Div([
 # First map chart and connecting the Plotly graphs with Dash Components
 # The .callback is what actually updates the graphs and outputs it with the OUTPUT
 # The input is the value that is passed from the list of values that are connected to our dcc.Dropdown component
-@app.callback(
+@ app.callback(
     # Output(component_id="variable id linked above", component_property="refer to the component in the layout")
     Output(component_id="output_div", component_property="children"),
     # NOTE tha value
@@ -148,13 +153,15 @@ def hero_statistics(hero_choosen):
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
     tmp_df_histogram2['average_gold_per_min'] = tmp_df["gold_per_min"].mean()
-    fig_histogram2 = px.bar(tmp_df_histogram2, x="hero",y="average_gold_per_min")
+    fig_histogram2 = px.bar(tmp_df_histogram2, x="hero",
+                            y="average_gold_per_min")
     fig_histogram2.update_xaxes(categoryorder="total descending")
 
     tmp_df_histogram3 = tmp_df.groupby('hero_role')['gold_per_min'].mean()
     tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
     tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
-    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero_role",y='gold_per_min')
+    fig_histogram3 = px.bar(
+        tmp_df_histogram3, x="hero_role", y='gold_per_min')
     fig_histogram3.update_xaxes(categoryorder="total descending")
 
     # xp_per_min
@@ -164,7 +171,8 @@ def hero_statistics(hero_choosen):
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
     tmp_df_histogram2['average_xp_per_min'] = tmp_df["xp_per_min"].mean()
-    fig_histogram5 = px.bar(tmp_df_histogram2, x="hero",y="average_xp_per_min")
+    fig_histogram5 = px.bar(tmp_df_histogram2, x="hero",
+                            y="average_xp_per_min")
     fig_histogram5.update_xaxes(categoryorder="total descending")
 
     tmp_df_histogram3 = tmp_df.groupby('hero_role')['xp_per_min'].mean()
@@ -180,7 +188,8 @@ def hero_statistics(hero_choosen):
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
     tmp_df_histogram2['average_last_hits'] = tmp_df["last_hits"].mean()
-    fig_histogram8 = px.bar(tmp_df_histogram2, x="hero", y="average_last_hits")
+    fig_histogram8 = px.bar(tmp_df_histogram2, x="hero",
+                            y="average_last_hits")
     fig_histogram8.update_xaxes(categoryorder="total descending")
 
     tmp_df_histogram3 = tmp_df.groupby('hero_role')['last_hits'].mean()
@@ -188,7 +197,7 @@ def hero_statistics(hero_choosen):
     tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
     fig_histogram9 = px.bar(tmp_df_histogram3, x="hero_role", y='last_hits')
     fig_histogram9.update_xaxes(categoryorder="total descending")
-    
+
     # STRIP CHART
     # NOTE Y- According to the role
     # NOTE SINGLE METRIC TO SEE AGAINST
@@ -208,14 +217,34 @@ def hero_statistics(hero_choosen):
         df_sburst, path=["hero_role", "hero", "last_hits"])
 
     # EMPIRICAL CUM DISTRIBUTION
-    df_ecdf = df_hero_statistics[df_hero_statistics["hero_role"]
-                                 .isin(["Hard-Carry", "Soft-carry", "Support", "Offlaner/All-rounder"])]
+    df_ecdf = df_hero_statistics[df_hero_statistics["hero_role"].isin(
+        ["Hard-Carry", "Soft-carry", "Support", "Offlaner/All-rounder"])]
     fig_ecdf = px.ecdf(df_ecdf, x='xp_per_min', color="hero_role")
 
     # LINECHART
 
     # Bar Graph for the Ouput of Hero Individual Statistics
     # fig = px.pie(tmp_df,names='col',title="%s Individual Statistics on %s" % search_value)
+
+    # These for loops update the size of the actual bar in the bar graphs
+
+    for data in fig_histogram.data:
+        data["width"] = 0.25
+
+    for data in fig_histogram2.data:
+        data["width"] = 0.25
+
+    for data in fig_histogram4.data:
+        data["width"] = 0.25
+
+    for data in fig_histogram5.data:
+        data["width"] = 0.25
+
+    for data in fig_histogram7.data:
+        data["width"] = 0.25
+
+    for data in fig_histogram8.data:
+        data["width"] = 0.25
 
     # return all the figures
     return [
