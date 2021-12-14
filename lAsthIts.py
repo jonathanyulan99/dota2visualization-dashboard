@@ -28,8 +28,8 @@ navbar = dbc.NavbarSimple(
     children=[
         dbc.NavItem(html.Img(
             src='https://logos-world.net/wp-content/uploads/2020/12/Dota-2-Logo.png', height="40px")),
-        dbc.NavItem(dbc.NavLink("Hero Analyzer", href='/apps/visualizations')),
-        dbc.NavItem(dbc.NavLink("Meta Analyzer", href='/apps/rankings')),
+        dbc.NavItem(dbc.NavLink("Hero Analyzer", href='')),
+        dbc.NavItem(dbc.NavLink("Meta Analyzer", href='')),
     ],
 
     brand="Dota 2 Dashboard",
