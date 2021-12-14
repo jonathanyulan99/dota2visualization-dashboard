@@ -14,6 +14,7 @@ from dash.exceptions import PreventUpdate
 external_stylesheets = [
     'https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.MORPH]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
 
 # Import your data
 df_hero_statistics = pd.read_csv('overall_hero_cluster.csv')
