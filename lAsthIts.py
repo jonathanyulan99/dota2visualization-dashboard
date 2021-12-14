@@ -1,3 +1,4 @@
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from dash.html.Hr import Hr
 import pandas as pd
 import plotly.express as px  # (version 4.7.0 or higher)
@@ -10,7 +11,8 @@ import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.MORPH]
+external_stylesheets = [
+    'https://codepen.io/chriddyp/pen/bWLwgP.css', dbc.themes.MORPH]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Import your data
@@ -88,7 +90,7 @@ app.layout = html.Div([
 
     # NOTE that here is where the id gets connected in the backend, and the property being the children
     html.Div(id="output_div_2", children=[]),
-    ])
+])
 # --------------------------------------------------------------------------------
 # Second and Thrid Charts
 
@@ -161,51 +163,63 @@ def hero_statistics(hero_choosen):
     # hero from cluster data frame where the 'hero' column in dataframe is equiavalent to the value 'selcted_hero' when selected
     tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
     fig_histogram = px.bar(tmp_df_histogram, x="hero", y='gold_per_min')
-    fig_histogram.update_xaxes(title=f'Gold Per Minute {hero_choosen}',categoryorder="total descending")
+    fig_histogram.update_xaxes(
+        title=f'Gold Per Minute {hero_choosen}', categoryorder="total descending")
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
     tmp_df_histogram2['average_gold_per_min'] = tmp_df["gold_per_min"].mean()
-    fig_histogram2 = px.bar(tmp_df_histogram2,x="average_gold_per_min", y="average_gold_per_min")
-    fig_histogram2.update_xaxes(title=f'Average Gold Per Minute for All Heroes',categoryorder="total descending")
+    fig_histogram2 = px.bar(
+        tmp_df_histogram2, x="average_gold_per_min", y="average_gold_per_min")
+    fig_histogram2.update_xaxes(
+        title=f'Average Gold Per Minute for All Heroes', categoryorder="total descending")
 
     tmp_df_histogram3 = tmp_df.groupby('hero_role')['gold_per_min'].mean()
     tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
     tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
-    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero_role",y='gold_per_min')
-    fig_histogram3.update_xaxes(title=f'Gold Per Minute per Role',categoryorder="total descending")
+    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero_role", y='gold_per_min')
+    fig_histogram3.update_xaxes(
+        title=f'Gold Per Minute per Role', categoryorder="total descending")
 
     # xp_per_min
     tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
     fig_histogram4 = px.bar(tmp_df_histogram, x="hero", y='xp_per_min')
-    fig_histogram.update_xaxes(title=f'Xp Per Minute {hero_choosen}',categoryorder="total descending")
+    fig_histogram4.update_xaxes(
+        title=f'Xp Per Minute {hero_choosen}', categoryorder="total descending")
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
     tmp_df_histogram2['average_xp_per_min'] = tmp_df["xp_per_min"].mean()
-    fig_histogram5 = px.bar(tmp_df_histogram2, x="average_xp_per_min",y="average_xp_per_min")
-    fig_histogram5.update_xaxes(title=f'Xp Per Minute for All Heroes',categoryorder="total descending")
+    fig_histogram5 = px.bar(
+        tmp_df_histogram2, x="average_xp_per_min", y="average_xp_per_min")
+    fig_histogram5.update_xaxes(
+        title=f'Average Xp Per Minute for All Heroes', categoryorder="total descending")
 
     tmp_df_histogram3 = tmp_df.groupby('hero_role')['xp_per_min'].mean()
     tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
     tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
     fig_histogram6 = px.bar(tmp_df_histogram3, x="hero_role", y='xp_per_min')
-    fig_histogram6.update_xaxes(title=f'Xp Per Minute per Role',categoryorder="total descending")
+    fig_histogram6.update_xaxes(
+        title=f'Xp Per Minute per Role', categoryorder="total descending")
 
     # last_hits
     tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
     fig_histogram7 = px.bar(tmp_df_histogram, x="hero", y='last_hits')
-    fig_histogram7.update_xaxes(title=f'Average Last Hits per Minute for {hero_choosen}',categoryorder="total descending")
+    fig_histogram7.update_xaxes(
+        title=f'Last Hits per Minute for {hero_choosen}', categoryorder="total descending")
 
     tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
     tmp_df_histogram2['average_last_hits'] = tmp_df["last_hits"].mean()
-    fig_histogram8 = px.bar(tmp_df_histogram2, x="average_last_hits", y="average_last_hits")
-    fig_histogram8.update_xaxes(title=f'Average Last Hits for all Heroes', categoryorder="total descending")
+    fig_histogram8 = px.bar(
+        tmp_df_histogram2, x="average_last_hits", y="average_last_hits")
+    fig_histogram8.update_xaxes(
+        title=f'Average Last Hits for all Heroes', categoryorder="total descending")
 
     tmp_df_histogram3 = tmp_df.groupby('hero_role')['last_hits'].mean()
     tmp_df_histogram3 = pd.DataFrame(tmp_df_histogram3)
     tmp_df_histogram3 = tmp_df_histogram3.reset_index('hero_role')
     fig_histogram9 = px.bar(tmp_df_histogram3, x="hero_role", y='last_hits')
-    fig_histogram9.update_xaxes(title=f'Last Hits per Minute per Role',categoryorder="total descending")
-    
+    fig_histogram9.update_xaxes(
+        title=f'Last Hits per Minute per Role', categoryorder="total descending")
+
     # STRIP CHART
     # NOTE Y- According to the role
     # NOTE SINGLE METRIC TO SEE AGAINST
@@ -222,11 +236,11 @@ def hero_statistics(hero_choosen):
     # branches are the heroes
     # metric types are all the specific metrics we are trying to display
     fig_sburst = px.sunburst(
-        df_sburst, path=["hero_role", "hero", "last_hits"])
+        tmp_df_histogram, path=['hero', 'hero_role', 'last_hits'], values='xp_per_min', color='hero_role')
 
     # EMPIRICAL CUM DISTRIBUTION
-    df_ecdf = df_hero_statistics[df_hero_statistics["hero_role"]
-                                 .isin(["Hard-Carry", "Soft-carry", "Support", "Offlaner/All-rounder"])]
+    df_ecdf = df_hero_statistics[df_hero_statistics["hero_role"].isin(
+        ["Hard-Carry", "Soft-carry", "Support", "Offlaner/All-rounder"])]
     fig_ecdf = px.ecdf(df_ecdf, x='xp_per_min', color="hero_role")
 
     # LINECHART
@@ -287,81 +301,15 @@ def hero_statistics(hero_choosen):
             html.Div([
                 html.Div([dcc.Graph(figure=fig_ecdf)],
                          className="six columns"),
-                html.Div([dcc.Graph(figure=fig_strip1)],
-                         className="six columns"),
             ], className="row"),
             html.Hr(),
             html.Div([
                 html.Div([dcc.Graph(figure=fig_sburst)], className="twelve columns"), ], className="row"),
-        ]),
             html.Hr(),
+        ]),
     ]
-# ----------------------------------------------------------------
-# # Time series charts
-# @app.callback(
-#     [Output(component_id="state-time-series-chart", component_property="figure"),
-#     Output(component_id="usa-time-series-chart", component_property="figure"),
-#     Output(component_id='output_container', component_property='children')],
-#     [Input("state_selected", "value")])
-
-# def display_time_series(state_selected):
-
-#     # Use the input from the user to render some text and return it
-#     display_text = "The state chosen by user was: %s" % state_selected
-
-#     # Get just the data of the US, not the states.
-#     usa_df = df_daily[df_daily['state'] == 'USA']
-
-#     # Make a bar chart of the US daily cases
-#     usa_figure = px.bar(
-#         usa_df,
-#         x='date',
-#         y='daily_cases',
-#         title="Daily Cases in all USA")
-
-#     # Little sanity check you can see in your terminal.
-#     print(state_selected)
-
-#     # Use the users input to select just the selected state.
-#     tmp_df = df_daily[df_daily['state'] == state_selected]
-
-#     # Make a bar chart of just the selected state.
-#     state_figure = px.bar(
-#         tmp_df,
-#         x='date',
-#         y='daily_cases',
-#         title=("Daily Cases in %s" % state_selected))
-
-#     return state_figure, usa_figure, display_text
 
 
-# # ----------------------------------------------------------------
-# # Scatter Plot Chart
-# @app.callback(
-#     Output("scatter-plot", "figure"),
-#     [Input('scatter_plot_value', 'children')])
-
-# def display_scatter(scatter_plot_value):
-
-#     # Making a temporary copy of the data frame
-#     tmp_df = master_df.copy()
-
-#     # Removing the values for the total USA.
-#     tmp_df = tmp_df[tmp_df['state'] != 'USA']
-
-#     # Making a scatter plot
-#     fig = px.scatter(
-#         tmp_df,
-#         x="case_rate",
-#         y="death_rate",
-#         text='state',
-#         size="popestimate2019",
-#         color='region',
-#         hover_name="state",
-#         log_x=False,
-#         size_max=25)
-
-#     return fig
 @app.callback(
     # Output(component_id="variable id linked above", component_property="refer to the component in the layout")
     Output(component_id="output_div_2", component_property="children"),
@@ -379,510 +327,117 @@ def hero_statistics(hero_choosen):
         raise PreventUpdate
 
     # copy from main DF **DO NOT MESS WITH ORIGINAL DATAFRAMES**
-    tmp_df = df_hero_statistics_updated.copy()
-
-    # Just removing the rows where the values are the total USA.
-    # logic to be placed here
-    # tmp_df = tmp_df[tmp_df.state != 'USA']
-    # Selecting just the rows that the data is the input from the user.
-
-    # hero from cluster data frame where the 'hero' column in dataframe is equiavalent to the value 'selcted_hero' when selected
-    # DAMAGE NUMBERS
-    tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram = px.bar(tmp_df_histogram, x="hero",y="result_hero_damage_per_min_2_value")
-    fig_histogram.update_xaxes(title="Top 20 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram2['average_result_hero_damage_per_min_2_value'] = tmp_df["result_hero_damage_per_min_2_value"].mean()
-    fig_histogram2 = px.bar(tmp_df_histogram2, x="average_result_hero_damage_per_min_2_value",y="average_result_hero_damage_per_min_2_value")
-    fig_histogram2.update_xaxes(title="Average Top 20 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram2.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram3 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero",y="result_hero_damage_per_min_4_value")
-    fig_histogram3.update_xaxes(title="Top 40 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram4 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram4['average_result_hero_damage_per_min_4_value'] = tmp_df["result_hero_damage_per_min_4_value"].mean()
-    fig_histogram4 = px.bar(tmp_df_histogram4, x="average_result_hero_damage_per_min_4_value",
-                            y="average_result_hero_damage_per_min_4_value")
-    fig_histogram4.update_xaxes(title="Average Top 40 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram3.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram4.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram5 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram5 = px.bar(tmp_df_histogram5, x="hero",y="result_hero_damage_per_min_6_value")
-    fig_histogram5.update_xaxes(title="Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram6 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram6['average_result_hero_damage_per_min_6_value'] = tmp_df["result_hero_damage_per_min_6_value"].mean()
-    fig_histogram6 = px.bar(tmp_df_histogram6, x="average_result_hero_damage_per_min_6_value",
-                            y="average_result_hero_damage_per_min_6_value")
-    fig_histogram6.update_xaxes(title="Average Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram5.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram6.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram7 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram7 = px.bar(tmp_df_histogram7, x="hero",y="result_hero_damage_per_min_8_value")
-    fig_histogram7.update_xaxes(title="Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram8 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram8['average_result_hero_damage_per_min_8_value'] = tmp_df["result_hero_damage_per_min_8_value"].mean()
-    fig_histogram8 = px.bar(tmp_df_histogram8, x="average_result_hero_damage_per_min_8_value",
-                            y="average_result_hero_damage_per_min_8_value")
-    fig_histogram8.update_xaxes(title="Average Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram7.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram8.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram9 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram9 = px.bar(tmp_df_histogram9, x="hero",y="result_hero_damage_per_min_10_value")
-    fig_histogram9.update_xaxes(title="Pro Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram10 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram10['average_result_hero_damage_per_min_10_value'] = tmp_df["result_hero_damage_per_min_10_value"].mean()
-    fig_histogram10 = px.bar(tmp_df_histogram10, x="average_result_hero_damage_per_min_10_value",
-                             y="average_result_hero_damage_per_min_10_value")
-    fig_histogram10.update_xaxes(title="Pro Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram9.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram10.data:
-        data["width"] = 0.25
-
-    # Gold Numbers
-        tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram = px.bar(tmp_df_histogram, x="hero",
-                           y="result_hero_damage_per_min_2_value")
-    fig_histogram.update_xaxes(
-        title="Top 20 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram2['average_result_hero_damage_per_min_2_value'] = tmp_df["result_hero_damage_per_min_2_value"].mean()
-    fig_histogram2 = px.bar(tmp_df_histogram2, x="average_result_hero_damage_per_min_2_value",
-                            y="average_result_hero_damage_per_min_2_value")
-    fig_histogram2.update_xaxes(
-        title="Average Top 20 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram2.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram3 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram3 = px.bar(tmp_df_histogram3, x="hero",
-                            y="result_hero_damage_per_min_4_value")
-    fig_histogram3.update_xaxes(
-        title="Top 40 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram4 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram4['average_result_hero_damage_per_min_4_value'] = tmp_df["result_hero_damage_per_min_4_value"].mean()
-    fig_histogram4 = px.bar(tmp_df_histogram4, x="average_result_hero_damage_per_min_4_value",
-                            y="average_result_hero_damage_per_min_4_value")
-    fig_histogram4.update_xaxes(
-        title="Average Top 40 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram3.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram4.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram5 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram5 = px.bar(tmp_df_histogram5, x="hero",
-                            y="result_hero_damage_per_min_6_value")
-    fig_histogram5.update_xaxes(
-        title="Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram6 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram6['average_result_hero_damage_per_min_6_value'] = tmp_df["result_hero_damage_per_min_6_value"].mean()
-    fig_histogram6 = px.bar(tmp_df_histogram6, x="average_result_hero_damage_per_min_6_value",
-                            y="average_result_hero_damage_per_min_6_value")
-    fig_histogram6.update_xaxes(
-        title="Average Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram5.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram6.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram7 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram7 = px.bar(tmp_df_histogram7, x="hero",
-                            y="result_hero_damage_per_min_8_value")
-    fig_histogram7.update_xaxes(
-        title="Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram8 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram8['average_result_hero_damage_per_min_8_value'] = tmp_df["result_hero_damage_per_min_8_value"].mean()
-    fig_histogram8 = px.bar(tmp_df_histogram8, x="average_result_hero_damage_per_min_8_value",
-                            y="average_result_hero_damage_per_min_8_value")
-    fig_histogram8.update_xaxes(
-        title="Average Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram7.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram8.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram9 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram9 = px.bar(tmp_df_histogram9, x="hero",
-                            y="result_hero_damage_per_min_10_value")
-    fig_histogram9.update_xaxes(
-        title="Pro Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram10 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram10['average_result_hero_damage_per_min_10_value'] = tmp_df["result_hero_damage_per_min_10_value"].mean()
-    fig_histogram10 = px.bar(tmp_df_histogram10, x="average_result_hero_damage_per_min_10_value",
-                             y="average_result_hero_damage_per_min_10_value")
-    fig_histogram10.update_xaxes(
-        title="Pro Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram9.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram10.data:
-        data["width"] = 0.25
-
-
-    # Xp Numbers
-    tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram11 = px.bar(tmp_df_histogram, x="hero",y="result_xp_per_min_2_value")
-    fig_histogram11.update_xaxes(title="Top 20 Percentile XP Per Min", categoryorder="total descending")
-
-    tmp_df_histogram12 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram12['average_result_xp_per_min_2_value'] = tmp_df["result_xp_per_min_2_value"].mean()
-    fig_histogram12 = px.bar(tmp_df_histogram12, x="average_result_xp_per_min_2_value", y="average_result_xp_per_min_2_value")
-    fig_histogram12.update_xaxes(title="Average Top 20 Percentile XP Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram11.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram12.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram13 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram13 = px.bar(tmp_df_histogram13, x="hero",y="result_xp_per_min_4_value")
-    fig_histogram13.update_xaxes(title="Top 40 Percentile XP Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram14 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram14['average_result_xp_per_min_4_value'] = tmp_df["result_xp_per_min_4_value"].mean()
-    fig_histogram14 = px.bar(tmp_df_histogram14, x="average_result_xp_per_min_4_value", y="average_result_xp_per_min_4_value")
-    fig_histogram14.update_xaxes(title="Average Top 40 Percentile XP Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram13.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram14.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram15 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram15 = px.bar(tmp_df_histogram15, x="hero",y="result_xp_per_min_6_value")
-    fig_histogram15.update_xaxes(title="Top 60 Percentile XP Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram16 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram16['average_result_xp_per_min_6_value'] = tmp_df["result_xp_per_min_6_value"].mean()
-    fig_histogram16 = px.bar(tmp_df_histogram16, x="average_result_xp_per_min_6_value",y="average_result_xp_per_min_6_value")
-    fig_histogram16.update_xaxes(title="Average Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram15.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram16.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram17 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram17 = px.bar(tmp_df_histogram17, x="hero",y="result_xp_per_min_8_value")
-    fig_histogram17.update_xaxes(title="Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram18 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram18['average_result_xp_per_min_8_value'] = tmp_df["result_xp_per_min_8_value"].mean()
-    fig_histogram18 = px.bar(
-        tmp_df_histogram18, x="average_result_xp_per_min_8_value", y="average_result_xp_per_min_8_value")
-    fig_histogram18.update_xaxes(title="Average Top 80 Percentile XP Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram17.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram18.data:
-        data["width"] = 0.25
-
-    tmp_df_histogram19 = tmp_df[tmp_df["hero"] == hero_choosen]
-    fig_histogram19 = px.bar(tmp_df_histogram19, x="hero",y="result_xp_per_min_10_value")
-    fig_histogram19.update_xaxes(title="Pro XP Per Min Metric", categoryorder="total descending")
-
-    tmp_df_histogram20 = tmp_df[tmp_df["hero"] == hero_choosen]
-    tmp_df_histogram20['average_result_xp_per_min_10_value'] = tmp_df["result_xp_per_min_10_value"].mean()
-    fig_histogram20 = px.bar(tmp_df_histogram20, x="average_result_xp_per_min_10_value",y="average_result_xp_per_min_10_value")
-    fig_histogram20.update_xaxes(title="Pro XP Per Min Metric", categoryorder="total descending")
-
-    for data in fig_histogram19.data:
-        data["width"] = 0.25
-
-    for data in fig_histogram20.data:
-        data["width"] = 0.25
-    
-    # # Last Hit Numbers
-    # tmp_df_histogram = tmp_df[tmp_df["hero"] == hero_choosen]
-    # fig_histogram = px.bar(tmp_df_histogram, x="hero",
-    #                        y="result_hero_damage_per_min_2_value")
-    # fig_histogram.update_xaxes(
-    #     title="Top 20 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # tmp_df_histogram2 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # tmp_df_histogram2['average_result_hero_damage_per_min_2_value'] = tmp_df["result_hero_damage_per_min_2_value"].mean()
-    # fig_histogram2 = px.bar(tmp_df_histogram2, x="average_result_hero_damage_per_min_2_value",
-    #                         y="average_result_hero_damage_per_min_2_value")
-    # fig_histogram2.update_xaxes(
-    #     title="Average Top 20 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # for data in fig_histogram.data:
-    #     data["width"] = 0.25
-
-    # for data in fig_histogram2.data:
-    #     data["width"] = 0.25
-
-    # tmp_df_histogram3 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # fig_histogram3 = px.bar(tmp_df_histogram3, x="hero",
-    #                         y="result_hero_damage_per_min_4_value")
-    # fig_histogram3.update_xaxes(
-    #     title="Top 40 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # tmp_df_histogram4 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # tmp_df_histogram4['average_result_hero_damage_per_min_4_value'] = tmp_df["result_hero_damage_per_min_4_value"].mean()
-    # fig_histogram4 = px.bar(tmp_df_histogram4, x="average_result_hero_damage_per_min_4_value",
-    #                         y="average_result_hero_damage_per_min_4_value")
-    # fig_histogram4.update_xaxes(
-    #     title="Average Top 40 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # for data in fig_histogram3.data:
-    #     data["width"] = 0.25
-
-    # for data in fig_histogram4.data:
-    #     data["width"] = 0.25
-
-    # tmp_df_histogram5 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # fig_histogram5 = px.bar(tmp_df_histogram5, x="hero",
-    #                         y="result_hero_damage_per_min_6_value")
-    # fig_histogram5.update_xaxes(
-    #     title="Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # tmp_df_histogram6 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # tmp_df_histogram6['average_result_hero_damage_per_min_6_value'] = tmp_df["result_hero_damage_per_min_6_value"].mean()
-    # fig_histogram6 = px.bar(tmp_df_histogram6, x="average_result_hero_damage_per_min_6_value",
-    #                         y="average_result_hero_damage_per_min_6_value")
-    # fig_histogram6.update_xaxes(
-    #     title="Average Top 60 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # for data in fig_histogram5.data:
-    #     data["width"] = 0.25
-
-    # for data in fig_histogram6.data:
-    #     data["width"] = 0.25
-
-    # tmp_df_histogram7 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # fig_histogram7 = px.bar(tmp_df_histogram7, x="hero",
-    #                         y="result_hero_damage_per_min_8_value")
-    # fig_histogram7.update_xaxes(
-    #     title="Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # tmp_df_histogram8 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # tmp_df_histogram8['average_result_hero_damage_per_min_8_value'] = tmp_df["result_hero_damage_per_min_8_value"].mean()
-    # fig_histogram8 = px.bar(tmp_df_histogram8, x="average_result_hero_damage_per_min_8_value",
-    #                         y="average_result_hero_damage_per_min_8_value")
-    # fig_histogram8.update_xaxes(
-    #     title="Average Top 80 Percentile Damage Per Min Metric", categoryorder="total descending")
-
-    # for data in fig_histogram7.data:
-    #     data["width"] = 0.25
-
-    # for data in fig_histogram8.data:
-    #     data["width"] = 0.25
-
-    # tmp_df_histogram9 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # fig_histogram9 = px.bar(tmp_df_histogram9, x="hero",
-    #                         y="result_hero_damage_per_min_10_value")
-    # fig_histogram9.update_xaxes(
-    #     title="Pro Damage Per Min Metric", categoryorder="total descending")
-
-    # tmp_df_histogram10 = tmp_df[tmp_df["hero"] == hero_choosen]
-    # tmp_df_histogram10['average_result_hero_damage_per_min_10_value'] = tmp_df["result_hero_damage_per_min_10_value"].mean()
-    # fig_histogram10 = px.bar(tmp_df_histogram10, x="average_result_hero_damage_per_min_10_value",
-    #                          y="average_result_hero_damage_per_min_10_value")
-    # fig_histogram10.update_xaxes(
-    #     title="Pro Damage Per Min Metric", categoryorder="total descending")
-
-    # for data in fig_histogram9.data:
-    #     data["width"] = 0.25
-
-    # for data in fig_histogram10.data:
-    #     data["width"] = 0.25
+    tmp_df = df_hero_statistics_updated
+
+    fig = go.Figure()
+    tmp_df_hero = tmp_df[tmp_df["hero"] == hero_choosen]
+    # for contestant, group in tmp_df_hero:
+    #     print(f'Contestant:{contestant} and Group:{group}')
+    #     fig.add_trace(go.bar(arg=tmp_df_histogram, x=group['hero'],
+    #     y=group["result_hero_damage_per_min_2_value"],name=contestant,
+    #     color='contestant',
+    #     barmode='group',hovertemplate="Contestant=%s<br>Hero=%%{x}<br>Values=%%{y}<extra></extra>" % contestant))
+    # fig.update_layout(legend_title_text="Hero")
+    # fig.update_xaxes(title_text="Hero")
+    # fig.update_yaxes(title_text="Resulting Hero Damage")
+    data_input = []
+    layout_bar_group = go.Layout(
+        barmode='group', title=f'Gold per Minute for {hero_choosen}')
+    for i in range(5):
+        x = i
+        trace = go.Bar(x=tmp_df_hero["hero"],
+                       y=tmp_df_hero[f"result_gold_per_min_{x}_value"],
+                       name=f'(Percentile{str("PRO") if i==4 else 0+i*20}%)')
+        data_input.append(trace)
+        x += 2
+
+    bar_fig = go.Figure(data=data_input, layout=layout_bar_group)
+
+    data_input_2 = []
+    layout_bar_group_2 = go.Layout(
+        barmode='group', title=f'XP per Minute for {hero_choosen}')
+    for i in range(5):
+        x = i
+        trace = go.Bar(x=tmp_df_hero["hero"],
+                       y=tmp_df_hero[f"result_xp_per_min_{x}_value"],
+                       name=f'(Percentile{str("PRO") if i==4 else 0+i*20}%)')
+        data_input_2.append(trace)
+        x += 2
+
+    bar_fig_2 = go.Figure(data=data_input_2, layout=layout_bar_group_2)
+
+    data_input_3 = []
+    layout_bar_group_3 = go.Layout(
+        barmode='group', title=f'Damage per Minute for {hero_choosen}')
+    for i in range(5):
+        x = i
+        trace = go.Bar(x=tmp_df_hero["hero"],
+                       y=tmp_df_hero[f"result_hero_damage_per_min_{x}_value"],
+                       name=f'(Percentile{str("PRO") if i==4 else 0+i*20}%)')
+        data_input_3.append(trace)
+        x += 2
+
+    bar_fig_3 = go.Figure(data=data_input_3, layout=layout_bar_group_3)
+
+    data_input_4 = []
+    layout_bar_group_4 = go.Layout(
+        barmode='group', title=f'Last Hits per Minute for {hero_choosen}')
+    for i in range(5):
+        x = i
+        trace = go.Bar(x=tmp_df_hero["hero"],
+                       y=tmp_df_hero[f"result_last_hits_per_min_{x}_value"],
+                       name=f'(Percentile{str("PRO") if i==4 else 0+i*20}%)')
+        data_input_4.append(trace)
+        x += 2
+
+    bar_fig_4 = go.Figure(data=data_input_4, layout=layout_bar_group_4)
+
+    data_input_5 = []
+    layout_bar_group_5 = go.Layout(
+        barmode='group', title=f'Kills per Minute for {hero_choosen}')
+    for i in range(5):
+        x = i
+        trace = go.Bar(x=tmp_df_hero["hero"],
+                       y=tmp_df_hero[f"result_kills_per_min_{x}_value"],
+                       name=f'(Percentile{str("PRO") if i==4 else 0+i*20}%)')
+        data_input_5.append(trace)
+        x += 2
+
+    bar_fig_5 = go.Figure(data=data_input_5, layout=layout_bar_group_5)
 
     return [
         html.Div([
-        html.H2("PERCENTILE METRICS", style={"textAlign": "center"}),
-        html.Hr(),
-        html.Div([
-            html.Div([dcc.Graph(figure=fig_histogram)],
-                     className="six columns"),
-            html.Div([dcc.Graph(figure=fig_histogram2)],
-                     className="six columns"),
-        ], className="row"),
-        html.Hr(),
+            html.H2("PERCENTILE METRICS", style={"textAlign": "center"}),
+            html.Hr(),
             html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram3)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram4)],
-                     className="six columns"),
-            ], className="row"),
-        html.Hr(),
-            html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram5)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram6)],
-                     className="six columns"),
-            ], className="row"),
-        html.Hr(),
-            html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram7)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram8)],
-                     className="six columns"),
-            ], className="row"),
-        html.Hr(),
-        html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram9)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram10)],
-                     className="six columns"),
+                html.Div([dcc.Graph(figure=bar_fig)],
+                     className="twelve columns"),
             ], className="row"),
             html.Hr(),
             html.Br(),
             html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram11)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram12)],
-                     className="six columns"),
+                html.Div([dcc.Graph(figure=bar_fig_2)],
+                         className="twelve columns"),
             ], className="row"),
-            html.Hr(),
+            html.Br(),
             html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram13)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram14)],
-                     className="six columns"),
+                html.Div([dcc.Graph(figure=bar_fig_3)],
+                         className="twelve columns"),
             ], className="row"),
-            html.Hr(),
+            html.Br(),
             html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram15)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram16)],
-                     className="six columns"),
+                html.Div([dcc.Graph(figure=bar_fig_4)],
+                         className="twelve columns"),
             ], className="row"),
-            html.Hr(),
+            html.Br(),
             html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram17)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram18)],
-                     className="six columns"),
+                html.Div([dcc.Graph(figure=bar_fig_5)],
+                         className="twelve columns"),
             ], className="row"),
-            html.Hr(),
-            html.Div([
-                html.Div([dcc.Graph(figure=fig_histogram19)],
-                     className="six columns"),
-                html.Div([dcc.Graph(figure=fig_histogram20)],
-                     className="six columns"),
-            ], className="row"),
-         html.Hr(),
-        #  html.Div([
-        #     html.Div([dcc.Graph(figure=fig_histogram21)],
-        #              className="six columns"),
-        #     html.Div([dcc.Graph(figure=fig_histogram22)],
-        #              className="six columns"),
-        # ], className="row"),
-        # html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram23)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram24)],
-        #              className="six columns"),
-        #     ], className="row"),
-        # html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram25)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram26)],
-        #              className="six columns"),
-        #     ], className="row"),
-        # html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram27)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram28)],
-        #              className="six columns"),
-        #     ], className="row"),
-        # html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram29)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram30)],
-        #              className="six columns"),
-        #     ], className="row"),
-        #     html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram31)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram32)],
-        #              className="six columns"),
-        #     ], className="row"),
-        #     html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram33)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram34)],
-        #              className="six columns"),
-        #     ], className="row"),
-        #     html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram35)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram36)],
-        #              className="six columns"),
-        #     ], className="row"),
-        #     html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram37)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram38)],
-        #              className="six columns"),
-        #     ], className="row"),
-        #     html.Hr(),
-        #     html.Div([
-        #         html.Div([dcc.Graph(figure=fig_histogram39)],
-        #              className="six columns"),
-        #         html.Div([dcc.Graph(figure=fig_histogram40)],
-        #              className="six columns"),
-        #     ], className="row"),
         ])
     ]
+
+
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run_server(debug=True, port=6969)
