@@ -270,7 +270,7 @@ def hero_statistics(hero_choosen):
     # return all the figures
     return [
         html.Div([
-            html.H2("GRAPHS", style={"textAlign": "center"}),
+            html.H2("Breakdown Analysis per Hero", style={"textAlign": "center"}),
             html.Hr(),
             html.Div([
                 html.Div([dcc.Graph(figure=fig_histogram)],
