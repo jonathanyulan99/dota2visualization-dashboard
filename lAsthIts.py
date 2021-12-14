@@ -301,11 +301,11 @@ def hero_statistics(hero_choosen):
             html.Hr(),
             html.Div([
                 html.Div([dcc.Graph(figure=fig_ecdf)],
-                         className="six columns"),
+                         className="ten columns"),
             ], className="row"),
             html.Hr(),
             html.Div([
-                html.Div([dcc.Graph(figure=fig_sburst)], className="twelve columns"), ], className="row"),
+                html.Div([dcc.Graph(figure=fig_sburst)], className="eleven columns"), ], className="row"),
             html.Hr(),
         ]),
     ]
